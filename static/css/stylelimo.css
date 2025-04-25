@@ -69,6 +69,11 @@
     gap: 1rem;
     font-size: 1.5rem;
     color: var(--primary);
+    height: 3rem;
+}
+.logo-flex-box{
+    display: flex;
+    font-size: larger;
 }
 .logo i {
     font-size: 2rem;
@@ -404,6 +409,16 @@ button:hover {
             color: rgb(194, 194, 194);
         }
 
+        /* company summary box */
+        .companySummaryBox{
+            display: inline;
+        }
+        .hideandShowbtn{
+            color: rgb(115, 9, 213);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
         
         /* Support/Resistance */
 .technical-Analysis {
@@ -731,6 +746,7 @@ button:hover {
             background-color: transparent;
           
         }
+
         .chart-heading-content{
             display: flex;
             flex-direction: column;
@@ -743,6 +759,7 @@ button:hover {
             height: 400px;
             position: relative;
         }
+        
 
  /* Container to align radio buttons in a row */
  .radio-group {
@@ -775,7 +792,9 @@ input[type="radio"] {
 /* Style when radio is checked */
 input[type="radio"]:checked + label {
     background-color: #1f201f;
-    border: 2px solid #555555;
+    /* border: 2px solid #555555; */
+    border: 2px solid #ffffff;
+
     color: #ffffff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }

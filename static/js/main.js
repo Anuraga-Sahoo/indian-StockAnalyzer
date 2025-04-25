@@ -277,54 +277,43 @@ function getRecommendationClass(recommendation) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Function Name - createPriceChart
-// Author - Ojas Ulhas Dighe
-// updated by Anuraga Sahoo
-// Date - 3rd Mar 2025
-// Description - This function is used to create the price chart.
+// Function Name - updateCompanySummary
+// Author -  Anuraga Sahoo
+// Description - This function is used to update the company information or summary of companies
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// function createPriceChart(chartData) {
-//     const dates = chartData.map(d => d.date);
-//     const prices = chartData.map(d => d.price);
-//     const sma20 = chartData.map(d => d.sma20);
-//     const sma50 = chartData.map(d => d.sma50);
+function updateCompanySummary(text) {
+    const companySummary = document.getElementById("companySummary");
+    const showAndHideButton = document.getElementById('showMoreSummary');
+    const maxLength = 100;
 
-//     const traces = [
-//         {
-//             name: 'Price',
-//             x: dates,
-//             y: prices,
-//             type: 'scatter',
-//             line: { color: '#2563eb' }
-//         },
-//         {
-//             name: '20 SMA',
-//             x: dates,
-//             y: sma20,
-//             type: 'scatter',
-//             line: { color: '#16a34a' }
-//         },
-//         {
-//             name: '50 SMA',
-//             x: dates,
-//             y: sma50,
-//             type: 'scatter',
-//             line: { color: '#dc2626' }
-//         }
-//     ];
+    // Initial setup
+    if (text.length > maxLength) {
+        // Truncate text and add ellipsis
+        companySummary.textContent = text.slice(0, maxLength) + '...' ;
+        showAndHideButton.textContent = "Show more";
+        showAndHideButton.style.display = 'block'; // Show button
+    } else {
+        companySummary.textContent = text;
+        showAndHideButton.style.display = 'none'; // Hide button if text is short
+        return; // Exit if no need for toggle
+    }
 
-//     const layout = {
-//         title: 'Price Action',
-//         autosize: true,
-//         xaxis: { title: 'Date' },
-//         yaxis: { title: 'Price (₹)' },
-//         showlegend: true,
-//         legend: { orientation: 'h', y: -0.2 }
-//     };
+    // Toggle click handler
+    let isExpanded = false;
+    showAndHideButton.addEventListener('click', () => {
+        if (isExpanded) {
+            companySummary.textContent = text.slice(0, maxLength) + '...';
+            showAndHideButton.textContent = "Show more";
+        } else {
+            companySummary.textContent = text;
+            showAndHideButton.textContent = "Show less";
+        }
+        isExpanded = !isExpanded;
+    });
+}
 
-//     Plotly.newPlot('priceChart', traces, layout);
-// }  
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Function Name - createPriceChart
@@ -508,6 +497,8 @@ function createIndicatorsChart(chartData) {
 //     })
 
 // }
+
+//  this function is used to show the prediction values
 function updateChart(data) {
     // console.log(data);
     let chartCard = document.getElementById('chart-card-hide')
@@ -568,10 +559,94 @@ function updateChart(data) {
         renderChart(thirtyDay.value);
     });
 
-    // Set default to 30 days
-    sevenDay.checked = true; // Ensure 30d is checked by default
-    renderChart(sevenDay.value); // Render chart with 30 days initially
+    // Set default to 7 days
+    sevenDay.checked = true; // Ensure 7d is checked by default
+    renderChart(sevenDay.value); // Render chart with 7 days initially
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function Name - stock historical price chart
+// Author - Anuraga Sahoo
+// Date - 3rd Mar 2025
+// Description - This function is used to show the graph of the stock price
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function renderHistoricalStockPriceChart(data){
+
+    const chart_data = data.historical_date_price
+    console.log("Historical price data ",chart_data)
+
+    const date = data.historical_date_price.map((dates, index)=>{
+        return dates.Date
+    })
+
+    function updatePastPrice(inputdays){
+
+    
+    
+    slicedDate = date.slice(date.length-inputdays, date.length)
+    const price = data.historical_date_price.map((closes, index)=>{
+        return closes.close
+    })
+    slicedPrice = price.slice(price.length-inputdays, price.length)
+
+    const traces = [
+        {
+            name: 'StockPrice',
+            x: slicedDate,
+            y: slicedPrice,                  
+            type: 'scatter',
+            line: { color: '#16a34a' }
+        }
+    ];
+    const layout = {
+        title: `Price Chart`,
+        autosize: true,
+        paper_bgcolor: '#121218',
+        plot_bgcolor: '#121218',
+        font: {
+                color: 'white'
+            },
+        xaxis: { title: 'Date' },
+        yaxis: { title: 'Price (₹)' },
+        showlegend: true,
+        legend: { orientation: 'h', y: -0.2 }    
+    };
+    Plotly.newPlot('HistoricalPriceChart', traces, layout);
+}
+const past7d = document.getElementById('past7d')
+const past15d = document.getElementById('past15d')
+const past30d = document.getElementById('past30d')
+const past6m = document.getElementById('6m')
+const past1y = document.getElementById('1y')
+const past5y = document.getElementById('5y')
+
+
+
+const max = document.getElementById('max')
+
+
+past7d.addEventListener('click',()=>{ updatePastPrice( past7d.value)
+})
+past15d.addEventListener('click',()=>{ updatePastPrice( past15d.value)
+})
+past30d.addEventListener('click',()=>{ updatePastPrice( past30d.value)
+})
+past6m.addEventListener('click',()=>{ updatePastPrice( past6m.value)
+})
+past1y.addEventListener('click',()=>{ updatePastPrice( past1y.value)
+})
+past5y.addEventListener('click',()=>{ updatePastPrice( past5y.value)
+})
+max.addEventListener('click',()=>{ updatePastPrice(date.length)
+})
+
+// Set default to 365 days
+max.checked = true; // Ensure 365 is checked by default
+updatePastPrice(date.length); // Render chart with 7 days initially
+
+}
+
 
 
 
@@ -695,11 +770,22 @@ function updateUI(data) {
     document.getElementById('marketcap-size').innerText =  classifyCompanyINR(data.fundamentalAnalysis.valuation_metrics.market_cap)
     // update month date tag
     let inputDate = document.getElementById('startDate').value
-    document.getElementById('month-date-tag').innerText = `Invested in ${calculateDateDifference(inputDate).preciseMonths} Month ago`
+    if(calculateDateDifference(inputDate).approxMonths > 0){
+        document.getElementById('month-date-tag').innerText = `Invested in ${calculateDateDifference(inputDate).preciseMonths} Month ago`
+    }
+    else{
+        document.getElementById('month-date-tag').innerText = `Invested in ${calculateDateDifference(inputDate).days} Days ago`
+    }
 
     // update info icon or add click event on info icon
     getInfo('infoMessage lorenm loem lorem lorem lorem')
 
+    // update or add company info or summary
+    // document.getElementById('companySummary').textContent = data.fundamentalAnalysis.basic_info.companyBusinessSummary
+    updateCompanySummary(data.fundamentalAnalysis.basic_info.companyBusinessSummary)
+
+    // update the price chart
+    renderHistoricalStockPriceChart(data.fundamentalAnalysis)
     
 
     // Update current price and recommendation

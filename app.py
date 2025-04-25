@@ -398,6 +398,8 @@ class IndianStockAnalyzer:
                 
             stock = yf.Ticker(stock_symbol)
             data = stock.history(start=start_date, interval=interval)
+
+            print("intervl data : == ", data)
             
             if data.empty:
                 raise ValueError(f"No data found for symbol {stock_symbol}")
@@ -423,13 +425,18 @@ class IndianStockAnalyzer:
             domain = website.split('//')[-1].split('/')[0] if website else ''
             logoURL = f"https://logo.clearbit.com/{domain}" if domain else ''
 
-            income_stmt = stock.financials
-            gross_profit = income_stmt.loc["Gross Profit"] if "Gross Profit" in income_stmt.index else 0
+            income_stmt = stock.income_stmt
+            gross_profit = income_stmt.loc['Gross Profit'].iloc[0]
+
+            stock_historical_price_and_date = self.get_indian_stock_closing_price(symbol)
             
+
             fundamental_data = {
+                'historical_date_price': stock_historical_price_and_date,
                 'basic_info': {
                     'company_name': info.get('longName', 'N/A'),
                     'sector': info.get('sector', 'N/A'),
+                    'companyBusinessSummary': info.get('longBusinessSummary', 'N/A'),
                     'industry': info.get('industry', 'N/A'),
                     'company_logo': info.get('logo_url', 'N/A'),
                     'logoURL': logoURL
@@ -445,7 +452,7 @@ class IndianStockAnalyzer:
                 },
                 'financial_health': {
                     'total_revenue': info.get('totalRevenue', 0),
-                    'gross_profit': info.get('grossProfit', 0),
+                    'gross_profit': gross_profit,
                     'net_income': info.get('netIncomeToCommon', 0),
                     'total_debt': info.get('totalDebt', 0),
                     'debt_to_equity': info.get('debtToEquity', 0),
@@ -907,7 +914,7 @@ class IndianStockAnalyzer:
             train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
             
             model.train()
-            for epoch in range(50):
+            for epoch in range(33):
                 for batch_X, batch_y in train_loader:
                     optimizer.zero_grad()
                     output = model(batch_X)
@@ -1095,6 +1102,35 @@ class IndianStockAnalyzer:
             return 1
         else:
             return -1
+        
+
+    def get_indian_stock_closing_price(self,symbol, period='15y'):
+        if not symbol.endswith(".NS"):
+            symbol += ".NS"
+
+        stock = yf.Ticker(symbol)
+
+        historical = stock.history(period=period)
+
+        if(historical.empty):
+            logger.error(f"No data found for {symbol}")
+            return None
+        
+        # Extract closing prices and dates
+        closing_data = historical[['Close']].reset_index()
+        closing_data['Date'] = closing_data['Date'].dt.strftime('%Y-%m-%d')
+        closing_data['Close'] = closing_data['Close'].round(2)  # Round to 2 decimal places
+
+        closing_price_and_date = {
+            'Date': closing_data['Date'],
+            'close' : closing_data['Close']
+        }
+
+        df = pd.DataFrame(closing_price_and_date)
+        chart_data = df.to_dict(orient='records')
+
+
+        return chart_data
 #######################################################################################################################
 # Function: check_data_sources
 # Input: None

@@ -12,8 +12,8 @@
     <nav class="navbar">
         <div class="nav-content">
             <div class="logo">
-                <i class="fas fa-chart-line"></i>
-                <span>FinE - Stock Analyzer Pro</span>
+                <!-- <i class="fas fa-chart-line"></i> -->
+                <span class="logo-flex-box"><img class="logo" src="../static/logoNew.png" alt=""> Stock Analyzer Pro</span>
             </div>
         </div>
     </nav>
@@ -77,6 +77,10 @@
         <span class="date">-</span>
     </div>
 
+   
+
+
+
     <!-- Stock Info -->
     <div class="stock-info">
         <div class="stock-details">
@@ -116,6 +120,56 @@
         </div>
     </div>
 
+    <div class="companySummaryBox">
+        
+        <p class="companySummary" id="companySummary"></p>
+        <span id="showMoreSummary" class="hideandShowbtn">Show more</span>
+        
+        
+        
+    </div>
+
+     <!-- historical chart shows -->
+     <div class="historical-chart">
+    
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-area"></i> Price Chart</h3>
+
+                <div class="chart-actions-historical-price">
+                    <div class="radio-group">
+                        <input type="radio" id="past7d" name="days" value="7">
+                        <label for="past7d" class="predictionDays">7d</label>
+                
+                        <input type="radio" id="past15d" name="days" value="15">
+                        <label for="past15d" class="predictionDays">15d</label>
+                
+                        <input type="radio" id="past30d" name="days" value="30">
+                        <label for="past30d" class="predictionDays">1M</label>
+                        
+                        <input type="radio" id="6m" name="days" value="180">
+                        <label for="6m" class="predictionDays">6M</label>
+
+                        <input type="radio" id="1y" name="days" value="365">
+                        <label for="1y" class="predictionDays">1Y</label>
+
+                        <input type="radio" id="5y" name="days" value="1825">
+                        <label for="5y" class="predictionDays">5Y</label>
+
+                        
+                        <input type="radio" id="max" name="days" value="30">
+                        <label for="max" class="predictionDays">Max</label>
+                    </div>
+
+                </div>
+            </div>
+            <div class="chart-container">
+                <!-- <canvas id="futurePredictChart"></canvas> -->
+                <div id="HistoricalPriceChart"></div>
+                 
+            </div>
+        </div>
+    </div>
  
 
     <!-- Support/Resistance -->
