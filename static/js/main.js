@@ -711,9 +711,10 @@ async function analyzeStock() {
 
 // prediction of stocks when click on the toogle buttion
 
-const toggleBtn = document.getElementById('toggleBtn');
+// const toggleBtn = document.getElementById('toggleBtn');
+// toggleBtn.addEventListener('click',
         
-toggleBtn.addEventListener('click', async function predictStock() {
+ async function predictStock() {
 
     // activate the loader or show the loader after click on the buttion
     document.getElementById('predictLoader').style.display = 'block'
@@ -729,7 +730,8 @@ const response = await fetch('/api/check', {
         success: true,
         message: "button clicked"
     })
-});
+}
+);
 
 if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
@@ -746,7 +748,8 @@ console.error('Fetch Error:', error);
 // Revert toggle if request fails
 this.classList.toggle('active');
 }
-});
+}
+// );
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Function Name - updateUI
 // Author - Ojas Ulhas Dighe
@@ -881,6 +884,11 @@ document.addEventListener('DOMContentLoaded', () => {
             analyzeStock();
         }
     });
+
+    document.getElementById('toggleBtn').addEventListener
+    ('click', ()=>{
+        predictStock()
+    })
 });
 
 // Add window resize handler for charts
